@@ -1,0 +1,452 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage[landscape]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,relsize}
+\usepackage{color,graphicx,overpic}
+\usepackage{CJK}
+% Turn off header and footer
+\pagestyle{empty}
+\geometry{top=.25in,left=.25in,right=.25in,bottom=.25in}
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{\z@}{3ex}{2ex}
+                       {\normalfont\normalsize\bfseries\textit}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}{2ex}{0.5ex}
+                          {\normalfont\small\bfseries}}
+\makeatother
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\input{math_commands.tex}
+
+\newcommand{\ruler}{\\\rule{\columnwidth}{0.25pt}\\}
+\newcommand{\rulermy}{\rule{\columnwidth}{0.25pt}\\}
+% -----------------------------------------------------------------------
+\begin{document}
+\raggedright
+\footnotesize
+\begin{multicols*}{3}
+% multicol parameters
+% These lengths are set only within the two main columns
+% \setlength{\columnseprule}{0.1pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{0pt}
+\section{Math}
+	\textbf{Probability}
+	\begin{itemize}
+		\item
+		$ CDF: F(x)=P(X \leq x) $ \\
+		$  PDF: \sum{f(x)}dx = 1 $ \\
+		\item
+		\textbf{Bayes Theorem}:
+		$P(Y=y_i | X) = \frac{P(X|Y=y_i)P(Y=y_i)}{\Sigma_j{P(X|Y=y_j)P(Y=y_j)}}$\\
+		$\bX$ and $\bY$ are \textbf{independent} iff $P(\bX,\bY)=P(\bX)P(\bY)$\\
+		$\bX$ and $\bY$ are \textbf{uncorrelated} iff $\E(\bX,\bY)=\E(\bX)\E(\bY)$\\
+		\item 
+		$Var(X) = E[XX^T]-E[X]E[X]^T $
+	\end{itemize}
+% --------------------------------
+\textbf{Linear Algebra}\\
+$Range:R(A) = {w\in W|w=Av,v\in V}$
+$ Nullity:N(A) = {v\in{V}|Av=0} $
+$N(A)^{\perp} = R(A^{\perp})$ \\
+% --------------------------------
+\textbf{Matrix calculus}
+$
+f(\bx) = \bA\bx + \tp{\bx}\bA + \tp{\bx}\bx + \tp{\bx}\bA\bx \Rightarrow
+\frac{df(\bx)}{d\bx} = \tp{\bA} + \bA + 2\bx + (\bA\bx + \tp{\bA}\bx)
+$\\
+
+$ \frac{d(x^T Ay)}{dA}=x y^T$, 
+$ \frac{d(a^T x b+ a^T x^T b)}{dx}=(ab^T + ba^T)$\\
+$\bH_{i,j}=\frac{\partial^2 f}{\partial x_i \partial x_j}$;
+$\nabla_{x}(a\bx) = a\bI$;
+$\bJ = |\frac{\partial \bx}{\partial \by}| \Leftrightarrow \inv{\bJ} = |\frac{\partial \by}{\partial \bx}|$
+% --------------------------------
+\section{Perceptron}
+$f(\bx) = \btheta \cdot \bx + \theta_0 = \sum_{i=1}^{d}\theta_ix_i + \theta_0$,
+$
+\hat{y} =
+\begin{cases}
+    1,  & \text{if } f(x)\geq 0\\
+    -1, & \text{if } f(x) < 0
+\end{cases}
+$\\
+\textbf{loss for perceptron}: 
+$
+L(z,y) =
+\begin{cases}
+	0,  & \text{if } zy>0 \\
+	-zy, & \text{otherwise. }
+\end{cases}
+$,\\
+
+\textbf{Decision boundary}, a \textbf{hyperplane} in $\R^d$: $H = \{\inR{\bx}{d} : f(\bx) = 0\} = \{\inR{\bx}{d} : w \cdot \bx + \bb = 0\}$
+	\begin{itemize}
+		\item[]
+		$w$ is the \textbf{normal} of the hyperplane,\\
+		$\bb$ is the \textbf{offset} of the hyperplane from origin,\\
+		$-\frac{\bb}{\norm{w}}$ is the \textbf{signed distance} from the origin to hyperplane.
+	\end{itemize}
+\textbf{Perceptron algorithm},\\
+Input: $(\bx_1, y_1),\dots,(\bx_n, y_n) \in \R^{d} \times \{\pm 1\}$\\
+while some $y_i \neq \text{sign}(\btheta \cdot \bx_i)$\\
+\-\hspace{0.5cm} pick some misclassified $(\bx_i, y_i)$\\
+\-\hspace{0.5cm} $\btheta \leftarrow \btheta + y_i\bx_i$
+\begin{itemize}
+	\item[]
+	Given a \textbf{linearly separable data}, perceptron algorithm will take no more than $\frac{R^2}{\gamma^2}$ updates to \textbf{converge},
+	where $R = \max_{i}{\norm{\bx_i}}$ is the radius of the data, $\gamma = \min_{i}{\frac{y_i(\btheta\cdot\bx_i)}{\norm{\btheta}}}$ is the margin.\\
+	Also, $\frac{\btheta\cdot\bx}{\norm{\btheta}}$ is the signed distance from H to $\bx$ in the direction $\btheta$. \\
+	$\btheta = \sum_{i} \alpha_i y_i \bx_i$, thus any inner product space will work, this is a \textbf{kernel}.
+\end{itemize}
+
+\textbf{Gradient descent} view of perceptron, minimize margin cost function
+$J(\btheta) = \sum_{i}(-y_i(\btheta\cdot\bx_i))_{+}$ with $\btheta \leftarrow \btheta - \eta\nabla J(\btheta)$
+% --------------------------------
+
+\section{Support Vector Machine}
+\textbf{Hard margin SVM},\\
+$\min_{\btheta} \norm{\btheta}^2$, such that $y_i\btheta\cdot\bx_i \geq 1 (i = 1,\dots,n)$\\
+\textbf{Soft margin SVM},\\
+$\min_{\btheta} \norm{\btheta}^2 + C\sum_{i=1}^{n}(1-y_i\btheta\cdot\bx_i)_+$
+\ruler
+\textbf{Regularization and SVMs}:
+Simulated data with many features $\phi(\bx)$;\\
+C controls trade-off between margin $1/\norm{\btheta}$ and fit to data;\\
+\textbf{Large C: Fit to data, more overfitting, smaller margin.} \\
+Less data, more features $\rightarrow$ overfit
+\ruler
+$\btheta = \sum_{j}\alpha_j y_j\bx_j$, $\alpha_j \neq 0$ only for support vectors. \\
+\textbf{Margin} is $\frac{1}{\norm{\overrightarrow{\btheta}}}$.
+\textbf{Slab} is $\frac{2}{\norm{\overrightarrow{\btheta}}}$.
+% --------------------------------
+
+\section{Decision Theory}
+\textbf{Loss function}: $l : \mathcal{Y} \times \mathcal{Y} \rightarrow \R$,
+and $l(\hat{y}, y)$ is the cost of predicting $\hat{y}$ when the outcome is $y$.
+\ruler
+\textbf{Risk for a given class}:
+$R(\alpha_i|x) = \sum_{i=1}^{C}\lambda_{ij}P(w=j|x)$
+\ruler
+Assume $(\bX, \bY)$ are chosen i.i.d according to some probability distribution on $\mathcal{X}\times\mathcal{Y}$.
+\textbf{Risk} is misclassification probability: $R(f) = \E l(f(\bX), \bY) = Pr(f(\bX) \neq \bY)$
+\ruler
+\textbf{Bayes Decision Rule} is
+$
+f^{*}(x) =
+\begin{cases}
+    1,  & \text{if } P(\bY=1|x) > P(\bY=-1|x) \\
+    -1, & \text{otherwise. }
+\end{cases}
+$,\\
+and the optimal risk (Bayes risk) $R^{*} = \inf_{f}R(f)=R(f^*)$
+\begin{itemize}
+	\item[]
+	\textbf{Excess risk} is for any $f: \mathcal{X} \rightarrow \{-1, +1\}$,\\
+	$R(f) - R^* = \E (1[f(x)\neq f^*(x)]|2P(\bY=+1|\bX) - 1|)$\\
+	\textbf{Risk in Regression} is expected  squared error:
+	$R(f) = \E l(f(\bX), \bY) = \E \E [f(\bX) - \bY^2 | \bX]$
+\end{itemize}
+
+% --------------------------------
+
+\section{Generative and Discriminative}
+\textbf{Decision T.H. aka Risk minimization}:\\
+\textbf{Risk} for r (classifier) is the expected loss over all values of x,y\\
+$R(r)=E[L(r(x), Y)]$ 
+\ruler
+\textbf{Bayes decision rule/Bayes classifier}: r* minimize R(r)\\
+If 2 class, 0-1 loss, $\{ x:P(Y=i|X=x)=0.5 \}$
+\ruler
+\textbf{Three ways to build classifiers}\\
+1.Generative model(LDA): $ P(Y|x) \Rightarrow P(x|Y)P(Y) $
+2.Discriminative model(logistic regression): model P(Y|x) directly. \\
+3.Find decision boundary(SVM): model r(x) directly(no posterior).
+\ruler
+\textbf{Gaussian Discriminant Ana}\\
+Assump: each class follows normal dist.\\
+$ f(x)= \frac{1}{(\sqrt{2\pi}\sigma)^d} e^{-\frac{\norm{x-\mu}^2}{2 \sigma^2}}$\\
+\textit{Be careful with the sigma! It's one dim, a scalar!}\\
+$ argmax(P(Y=C|X=x))=argmax(P(X=x|Y=C)\pi _C) $ \\
+$ = argmax(log(P(X=x|Y=C)) + log(\pi _C))  $\\
+$
+= argmax(-\frac{\norm{x-\mu_C}^2}{2\sigma_C^2} - d log\sigma_C + log(\pi _C)) 
+$ 
+\rulermy
+\textbf{QDA}:\\
+For binary classification: 
+$ P(Y=C|X=x)=\frac{e^{Q_C(x)}}{e^{Q_C(x)}+e^{Q_D(x)}} = s(e^{Q_C(x)}-e^{Q_D(x)})$ \\
+General form(could be \textbf{anisotropic}):
+$
+argmax(-\frac{(x-\mu_C)^T \Sigma^{-1}(x-\mu_C)}{2\sigma_C^2} - log|\Sigma_C| + log(\pi _C)) 
+$
+% --------------------------------
+\rulermy
+\textbf{LDA}:
+Assump: same variance $\sigma$ for all.\\
+Find C maximize \textbf{linear discriminant fn}:\\
+$
+f(x,C) = \frac{\mu_C x}{\sigma^2} - \frac{\norm{\mu_C}^2}{\sigma^2} + log \pi_C
+$\\
+General form(could be \textbf{anisotropic}):
+$
+argmax(-\frac{(x-\mu_C)^T \Sigma^{-1}(x-\mu_C)}{2\sigma_C^2} - log|\Sigma_C| + log(\pi _C)) 
+$
+% --------------------------------
+\rulermy
+\textbf{Likelihood of Gaussian}:
+$\hat{\sigma} = \frac{\sum{\norm{x_i-\mu}^2}}{nd}$
+
+\section{Estimation}
+\textbf{Maximum likelihood(MLE)}:
+Choose parameter so that the distribution it defines gives the obverved data the highest probability (likelihood).
+\begin{itemize}
+	\item 
+	\textbf{Maximum log likelihood}:
+	Log of maximum likelihood, equilvalent to maximum likelihood since log is monotonically increase; it is useful
+	since it can change $\prod$ to $\sum$. 
+	\item
+	\textbf{Penalized maximum likelihood}:
+	Add a penalty term in the maximum (log) likelihood equation; treat the penalty term as some imaginary data points
+	crafted for desired probability.
+\end{itemize}
+\rulermy
+\textbf{Maximum a posterior probability(MAP)}: the mode of the posterior. If uniform prior, MAP is MLE; if not
+uniform prior, MAP is Penalized MLE.
+
+% --------------------------------
+
+\section{Multivariate Normal Distribution}
+Could be anisotropic:\\
+$\inR{\bx}{d}: p(x) = \frac{1}{\sqrt{(2\pi)^d|\bSigma|}}e^{(-\frac{1}{2}\tp{(\bx-\bmu)}\inv{\bSigma}(\bx-\bmu))}$
+\ruler
+\textbf{Covariance matrix}:
+$\bSigma = \E[(\bX - \bmu)(\bX - \bmu)^T] $\\
+\begin{itemize}
+	\item 
+	Symmetric: $\bSigma_{i,j} = \bSigma_{j_i}$\\
+	\item
+	Non-negative diagonal entries: $\bSigma{i,i} \geq 0$\\
+	\item
+	Positive semidefinite: $\forall \inR{\bv}{d}, \tp{\bv}\bSigma\bv \geq 0$
+\end{itemize}
+\rulermy
+\textbf{Spectral Theorem} for \textbf{non-diagonal covariance}:\\
+$U = [\bv_1, \bv_2, \dots, \bv_n], \bLambda = \diag(\tp{[\lambda_1, \lambda_2, \dots, \lambda_n]})$\\
+We can eigen decompose $\inv{\bSigma} = U\inv{\bLambda}\tp{U}$, this is like to change to a different eigen spaces, where covariances ($\bLambda$) diagonal axis-alianed.\\
+The \textbf{eigenvectors} of the sample covariance matrix tell us some orthogonal directions (alternative coordinate axes) along which
+the points are not correlated.
+\ruler
+Given a $d$-dimensaional Gaussian $\bX \sim \gaussian{\bmu}{\bSigma}$,\\
+\begin{itemize}
+	\item 
+	write $\bX = \left[ \begin{smallmatrix} \bY \\ \bZ \end{smallmatrix} \right]$,
+	$\bmu = \left[ \begin{smallmatrix} \bmu_\bY \\ \bmu_\bZ \end{smallmatrix} \right]$,
+	$\bSigma = \left[ \begin{smallmatrix} \bSigma_{\bY\bY} & \bSigma_{\bY\bZ} \\ \bSigma_{\bZ\bY} & \bSigma_{\bZ\bZ} \end{smallmatrix} \right]$,\\
+	where $\inR{\bY}{m}$, and $\inR{\bZ}{d-m}$. Then $\bY \sim \gaussian{\mu_\bY}{\bSigma_{\bY\bY}}$
+	\item
+	matrix $\inR{\bA}{m\times d}$ and vector $\inR{\bb}{m}$, define $\bY = \bA\bX + \bb$.\\
+	Then $\bY \sim \gaussian{\bA\bmu + \bb}{\bA\bSigma\tp{\bA}}$
+	\item
+	with $\bSigma$ positive definite,\\
+	$\bY = \bSigma^{-\frac{1}{2}}(\bX-\bmu) \sim \gaussian{\mathbf{0}, \bI}$
+\end{itemize}
+
+\rulermy
+\textbf{Gaussian maximum likelihood estimation}:\\
+Sample mean: $\hat{\bmu} = \frac{1}{n}\sum_{i=1}^{n}\bx_i$;\\
+Sample covariance: $\hat{\bSigma} = \frac{1}{n}\sum_{i=1}^{n}(\bx_i - \hat{\bmu})\tp{(\bx_i - \hat{\bmu})}$
+\ruler
+\textbf{Some terms}:\\
+Let each row: a sample pt:
+\begin{itemize}
+	\item 
+	\textbf{centering} X: $x_i-=\mu$ for all i $ \Rightarrow \dot X $
+	\item
+	\textbf{decorrelating} X: $Z=\dot X  V$, where $ Var(R)=\frac{1}{n}{\dot X}^T \dot X=V \Sigma V^T $
+	\item
+	\textbf{Sphering} X: $Z=\dot X  Var(R)^{\frac{1}{2}}$
+	\item
+	\textbf{Whitening} X: centering + sphering
+\end{itemize}
+% --------------------------------
+\section{Regression aka Fitting curves to data}
+\textbf{Regression fns}: \\ 
+(1) linear: $ h(x;w,\alpha) = w·x + \alpha$ \\ 
+(2) polynomial [equivalent to linear regression with added polynomial features] \\
+(3) logistic: $ h(x;w, \alpha) = s(w · x + \alpha) $ 
+\ruler
+\textbf{Loss fns}(y:true label):\\
+(A) \textbf{squared error}: $ L(z, y) = (z-y)^2  $ \\
+(B) \textbf{absolute error}: $ L(z, y) = |z-y|  $ \\
+(C) \textbf{logistic error} $ L(z, y) = -ylnz - (1-y)ln(1-z)  $ 
+\ruler
+\textbf{Risk fns}:\\
+(a) \textbf{mean loss}: $ J(h) = \frac{1}{n}\sum_{i}L(h(X_i),y_i)$ \\
+(b) \textbf{maximum loss}: $ J(h) = max(L(h(X_i),y_i))$ \\
+(c) \textbf{weighted sum}: $ J(h) = \sum_{i}w_iL(h(X_i),y_i)$ \\
+(d) \textbf{$l_1$ penalized}: $ J(h) = (a),(b),(c) + \lambda \norm{w}_l1$ \\
+(f) \textbf{$l_2$ penalized}: $ J(h) = (a),(b),(c) + \lambda \norm{w}^2$ 
+
+\rulermy
+\textbf{Least squares linear regression}\\
+(1) + (A) + (a) \\
+Task: Find w, $\alpha$ to minimize $J(w,\alpha) = \sum (X_i\cdot w+\alpha-y_i)^2 $
+$= \norm{Xw-y}^2 = RSS(w) $ , for \textbf{residual sum of squares}\\
+Solu: $w = (X^TX)^{-1}X^Ty$ \\ 
+- Sensitive to outliers (Errs are squared.) \\
+- Fails if $X^TX$ singular. 
+
+\rulermy
+\textbf{Logistic regression}\\
+(3) + (C) + (a) \\
+Task: Find w to minimize 
+$J(w) = \sum L(s(X_i\cdot w), y_i)$ \\
+Solu: J(w) convex, solved by GD.
+- Linear regression always separates linearly separable pts.  
+\ruler
+\textbf{Least squares polynomial regression}: switched to linear by adding polynomial features (Do not forget fictitious dim "1".)
+
+\rulermy
+\textbf{Weighted least-squares polynomial regression}:
+(1) + (A) + (c) \\
+Task: Find w to minimize $J(w) = (Xw-y)^T \Omega (Xw-y) = \sum w_i(X_i \cdot w - y_i)^2$ \\
+Solu: $w = (X^T \Omega X)^{-1}X^T \Omega y$ 
+
+\rulermy
+\textbf{Newton’s method} \\
+Often much faster than gradient descent if fn smooth enough. \\
+If convex, reach optimum in one step.(e,g logistic regression with $w_0=0$) \\
+\begin{itemize}
+	\item[] 
+	Taylor series about v:
+	$ \nabla J(w) = \nabla J(v) + (\nabla ^2 J(v)) (w-v) + O(\norm{w-v}^2) $ \\
+	Set J(w)=0, we get \\
+	$ w = v - (\nabla ^2 J(v))^{-1} \nabla J(v)$
+\end{itemize}
+Steps:
+\begin{itemize}
+	\item 
+	pick start pt w
+	\item 
+	repeat: $e \leftarrow solu\ to\ (\nabla ^2 J(v))^{-1}e =  \nabla J(v), $\\
+	$w\leftarrow w+e$
+\end{itemize}
+Example: use Newton’s method to solve logistic regression faster.(Iteratively reweighted least squares)
+\begin{itemize}
+	\item 
+	w=0
+	\item 
+	$e \leftarrow solu\ to\ (Xw-y)^T \Omega (Xw-y) = X^T(y-s)$ \\
+	($\Omega,s$ are fns of w, change through iters) \\
+	$w\leftarrow w+e$\\
+\end{itemize}
+\rulermy
+\textbf{LDA vs logistic regression}\\
+Advantages of LDA:
+\begin{itemize}
+	\item 
+	For well-separated classes, LDA stable; log. reg. surprisingly unstable\\
+	\item
+	more than 2 classes easy \& elegant; log. reg. needs modifying (softmax regression)
+	\item
+	LDA slightly more accurate when classes nearly normal, especially if n is small\\
+\end{itemize}
+
+Advantages of log. reg.:
+\begin{itemize}
+	\item 
+	More emphasis on decision boundary; always separates linearly separable pts\\
+	\item
+	More robust on some non-Gaussian distributions (e.g., dists. w/large skew)
+	\item
+	Naturally fits labels between 0 and 1 [usually probabilities]\\
+\end{itemize}
+\rulermy
+\textbf{ROC curve(for test sets)}
+ROC curve(receiver operating characteristics),\\
+\begin{itemize}
+	\item 
+	x-axis: \textbf{false positive rate} = \% of $-ve$ classified as $+ve$\\
+	\item
+	y-axis: \textbf{true positive rate} = \% of $+ve$ classified as $+ve$ aka \textbf{sensitivity} \\
+	\item
+	\textbf{false negative rate}: vertical distance from curve to top [1- sensitivity]\\
+	\item
+	\textbf{specificity}: horizontal distance from curve to right [1-false positive rate; true negative rate]
+\end{itemize}
+\section{Statistical justifications for regression}
+Reality: $y_i = g(X_i)+\epsilon_i$, where $ \epsilon_i$ \~{$N(0, \sigma)$} \\
+Goal of regression: find h that estimates g.\\
+Ideal approach: find $h(x)=E_Y[Y|X=x]=g(x)+E[\epsilon]=g(x)$
+\ruler
+\textbf{Empirical Risk}\\
+\textbf{Empirical distribution}: the discrete uniform distribution over the sample pts \\
+\textbf{Empirical risk}: expected loss under empirical distribution \\
+$ \hat{R(h)}=\frac{1}{n}\sum{L(h(X_i), y_i)}$ (approximation)
+\ruler
+\textbf{The bias-variance trade-off} \\
+2 sources of error in a hypothesis h: 
+\begin{itemize}
+	\item
+	bias: error due to inability of hypothesis h to fit g perfectly
+	\item
+	variance: error due to fitting random noise in data
+\end{itemize}
+$ R(h) =  E[L(h(z), \gamma)] = E[(h(z)-\gamma)^2] $\\
+$
+R(h) = 
+\E[\underbrace{(h(z) - g(z))^2}_{\text{bias}^2\text{ of method}}] + \underbrace{Var(h(z))}_{\text{variance of method}} + \underbrace{Var(\epsilon)}_{\text{irreducible error}} $
+\ruler
+\textbf{Some intuitions}:\\
+\begin{itemize}
+	\item 
+	Underfitting: too much bias
+	\item 
+	Most of overfitting: too much variance
+	\item 
+	Noise in test set: affect $Var(\epsilon)$,\\
+	Noise in training set: affect bias and $Var(h)$
+\end{itemize}
+
+\section{Regression with penalty}
+\textbf{Ridge regression aka Tikhonov Regularization}\\
+(1) + (A) + (f)\\
+solu: $(X^TX + \lambda I)w = X^Ty$ \\ 
+\textbf{Bayesian Justification for Ridge Reg.} 
+\ruler
+\textbf{Feature subset selection}:\\
+Use acc on val set.\\
+All features increase variance, but not all features reduce bias.\\
+1. Forward stepwise selection: Start with null model (0 features);\\
+2. Backward stepwise selection: Start with all d features;\\
+3. Only try to remove features with small weights.\\
+Note: These methods don't guarantee the optimal model. \\
+\textbf{LASSO}\\
+(1) + (A) + (d)\\
+Task: Find w to minimize $\norm{Xw-y}^2+\lambda |w'|$,\\ 
+where $|w'|=\sum_{i=0}^d |w_i|$ (not penalize $\alpha$) \\
+- The isosurfaces of $|w'|$ are cross-polytopes.\\
+- Normalize the features first before applying Lasso.
+
+\section{Some notes from past exam} 
+- To get Bayes optimal  decision boundary, you need both its prior knowledge and(P(Y)) its distribution (P(X|Y)), and always goes for the $argmax(P(Y|X))$.\\
+-  For 0,1 loss, Bayes risk is the area under the minimum of curve $P(X|Y)P(Y)$. (Nothing to do with your training data. If $P(X|Y)$ not overlap, the risk would be 0.)\\
+- If the sample cov matrix is not of full rank, the columns of the design matrix are linearly dependent.\\
+- Regression with varying noise is equivalent to weighted least-squares regression, and we are penalized less for deviation from sample points with high variance, cuz we know our measurement is noisy, and we shouldn’t try to overfit to it. \\
+- ROC curve is always increasing, not necessarily concave. \\
+- Multiply data matrix by an invertible mat may change its scale hence changing how they are classified., but mul by an orthonormal one won't.\\
+- For 0,1 loss, the LDA decision boundary is $\{x : Q_C(x) - Q_D(x) = 0\}$\\
+- Logistic regression makes no assumption about linearity, normality, etc.\\
+-  LDA finds what the Bayes decision rule would be under the assumption the class conditionals have normal distributions, parameterized by the sample means and covariance.\\
+\end{multicols*}
+\end{document}
