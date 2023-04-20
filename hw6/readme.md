@@ -1,0 +1,1 @@
+Except for the *.ipynb file which is for Kaggle, others are implementations of requires NN components(`q6_1.py` is about the usage of `enisum`). Use these files to replace those  in start code.
